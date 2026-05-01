@@ -3,15 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FormData, initialFormData, STEP_META, validateStep } from '@/lib/formSchema';
-import Step1PatientInfo      from '@/components/steps/Step1PatientInfo';
-import Step2DiseaseChar      from '@/components/steps/Step2DiseaseChar';
-import Step3DiseaseActivity  from '@/components/steps/Step3DiseaseActivity';
+import Step1PatientInfo from '@/components/steps/Step1PatientInfo';
+import Step2DiseaseChar from '@/components/steps/Step2DiseaseChar';
+import Step3DiseaseActivity from '@/components/steps/Step3DiseaseActivity';
 import Step4LabsInvestigations from '@/components/steps/Step4LabsInvestigations';
 import Step5CurrentTreatment from '@/components/steps/Step5CurrentTreatment';
 import Step6TreatmentHistory from '@/components/steps/Step6TreatmentHistory';
 import Step7InfectionScreening from '@/components/steps/Step7InfectionScreening';
-import Step8Vaccination      from '@/components/steps/Step8Vaccination';
-import Step9Comorbidities    from '@/components/steps/Step9Comorbidities';
+import Step8Vaccination from '@/components/steps/Step8Vaccination';
+import Step9Comorbidities from '@/components/steps/Step9Comorbidities';
 
 const TOTAL_STEPS = 3;
 
@@ -37,7 +37,7 @@ export default function FormPage() {
         const parsed = JSON.parse(saved);
         setData(prev => ({
           ...prev,
-          name: parsed.name  || prev.name,
+          name: parsed.name || prev.name,
           email: parsed.email || prev.email,
         }));
       } catch (err) {
@@ -154,9 +154,9 @@ export default function FormPage() {
           {/* Step number dots */}
           <div className="progress-steps" role="navigation" aria-label="Form steps">
             {STEP_META.map((_, i) => {
-              const n       = i + 1;
-              const done    = completedSteps.has(n);
-              const active  = n === step;
+              const n = i + 1;
+              const done = completedSteps.has(n);
+              const active = n === step;
               const reachable = done || n < step;
               return (
                 <button
@@ -179,7 +179,8 @@ export default function FormPage() {
         </div>
 
         {/* ── Step Card ── */}
-        <div className="step-card pb-24 md:pb-0" key={step}>
+        {/* CHANGED: pb-24 → pb-36 to ensure content doesn't hide behind fixed nav on mobile */}
+        <div className="step-card pb-36 md:pb-0" key={step}>
           <div className="step-card-head">
             <div className="step-num">Step {String(step).padStart(2, '0')}</div>
             <h1 className="step-title">{currentMeta.title}</h1>
@@ -193,12 +194,13 @@ export default function FormPage() {
           </div>
 
           <div className="step-body">
-            {step === 1 && <Step1PatientInfo      formData={data} onChange={updateData} errors={errors} />}
-            {step === 2 && <Step2DiseaseChar      formData={data} onChange={updateData} errors={errors} />}
+            {step === 1 && <Step1PatientInfo formData={data} onChange={updateData} errors={errors} />}
+            {step === 2 && <Step2DiseaseChar formData={data} onChange={updateData} errors={errors} />}
             {step === 3 && <Step4LabsInvestigations formData={data} onChange={updateData} errors={errors} />}
           </div>
 
-          <div className="form-nav fixed bottom-0 left-0 right-0 z-50 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] md:relative md:p-0 md:bg-transparent md:shadow-none md:z-auto">
+          {/* FIXED: nav bar stays fixed on mobile with safe area inset for iPhone notch */}
+          <div className="form-nav fixed bottom-0 left-0 right-0 z-50 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-4px_10px_rgba(0,0,0,0.08)] md:relative md:p-0 md:bg-transparent md:shadow-none md:z-auto">
             {step > 1 ? (
               <button type="button" className="btn-back" onClick={prevStep} disabled={isSubmitting}>
                 ← Back
@@ -227,19 +229,22 @@ export default function FormPage() {
         </div>
 
         {/* ── Step mini-map (mobile) ── */}
-        <div className="step-minimap">
-          {step > 1 && (
-            <button type="button" className="minimap-btn" onClick={prevStep}>← Back</button>
-          )}
-          <span className="minimap-label">
-            {step} / {TOTAL_STEPS} — {currentMeta.title}
-          </span>
-          {step < TOTAL_STEPS && (
-            <button type="button" className="minimap-btn minimap-btn-next" onClick={nextStep}>
-              Next →
-            </button>
-          )}
-        </div>
+        {/* CHANGED: hide minimap on last step so it doesn't overlap the fixed submit button */}
+        {step < TOTAL_STEPS && (
+          <div className="step-minimap">
+            {step > 1 && (
+              <button type="button" className="minimap-btn" onClick={prevStep}>← Back</button>
+            )}
+            <span className="minimap-label">
+              {step} / {TOTAL_STEPS} — {currentMeta.title}
+            </span>
+            {step < TOTAL_STEPS && (
+              <button type="button" className="minimap-btn minimap-btn-next" onClick={nextStep}>
+                Next →
+              </button>
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
