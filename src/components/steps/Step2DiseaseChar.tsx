@@ -1,4 +1,5 @@
 import { FormData } from '@/lib/formSchema';
+import Step8Vaccination from './Step8Vaccination';
 
 interface Props { formData: FormData; onChange: (f: string, v: any) => void; errors: Record<string,string>; }
 
@@ -74,6 +75,11 @@ export default function Step2DiseaseChar({ formData: d, onChange, errors: e }: P
             value={d.perianalDiseaseAssessment} onChange={x => onChange('perianalDiseaseAssessment', x.target.value)}
             placeholder="Describe any perianal disease, fistulas, abscesses, etc." />
         </Fg>
+      </div>
+      
+      <div className="span-2 mt-8">
+        <h3 className="text-xl font-semibold mb-4 text-white">Vaccination History</h3>
+        <Step8Vaccination formData={d} onChange={onChange} errors={e} />
       </div>
     </div>
   );

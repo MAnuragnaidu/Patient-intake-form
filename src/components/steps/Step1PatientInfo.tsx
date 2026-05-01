@@ -28,6 +28,23 @@ const Radio = ({ name, value, label, checked, onChange }: {
 export default function Step1PatientInfo({ formData: d, onChange, errors: e }: Props) {
   const showSmokingDetails = d.smokingStatus === 'Ex smoker' || d.smokingStatus === 'Current smoker';
 
+  const handleDateOfBirthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const dobValue = e.target.value;
+    onChange('dateOfBirth', dobValue);
+
+    if (dobValue) {
+      const dob = new Date(dobValue);
+      const today = new Date();
+      let age = today.getFullYear() - dob.getFullYear();
+      const m = today.getMonth() - dob.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+        age--;
+      }
+      // Ensure age is not negative
+      onChange('currentAge', Math.max(0, age).toString());
+    }
+  };
+
   return (
     <div className="form-grid">
       {/* Email */}
@@ -54,14 +71,15 @@ export default function Step1PatientInfo({ formData: d, onChange, errors: e }: P
       {/* Contact Phone */}
       <Fg id="contactPhone" label="Contact Phone" required error={e.contactPhone}>
         <input id="contactPhone" type="tel" className={`fi${e.contactPhone ? ' err' : ''}`}
-          value={d.contactPhone} onChange={x => onChange('contactPhone', x.target.value)}
-          placeholder="+91 XXXXX XXXXX" />
+          maxLength={10}
+          value={d.contactPhone} onChange={x => onChange('contactPhone', x.target.value.replace(/\D/g, ''))}
+          placeholder="e.g. 9876543210" />
       </Fg>
 
       {/* Date of Birth */}
       <Fg id="dateOfBirth" label="Date of Birth" required error={e.dateOfBirth}>
         <input id="dateOfBirth" type="date" className={`fi${e.dateOfBirth ? ' err' : ''}`}
-          value={d.dateOfBirth} onChange={x => onChange('dateOfBirth', x.target.value)} />
+          value={d.dateOfBirth} onChange={handleDateOfBirthChange} />
       </Fg>
 
       {/* Current Age */}

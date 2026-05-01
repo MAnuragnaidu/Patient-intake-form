@@ -36,6 +36,7 @@ export type FormData = {
   comorbidities: string[]; extraintestinalManif: string[];
   pregnancyPlanning: string; occupation: string;
   specialConsiderations: string; preferredLanguage: string;
+  documents: { name: string; url: string; fileId?: string }[];
 };
 
 export const initialFormData: FormData = {
@@ -64,18 +65,13 @@ export const initialFormData: FormData = {
   tetanusTdap:  emptyVaccine(),
   comorbidities: [], extraintestinalManif: [], pregnancyPlanning: '',
   occupation: '', specialConsiderations: '', preferredLanguage: '',
+  documents: [],
 };
 
 export const STEP_META = [
   { title: 'Patient Characteristics',     sub: 'Personal and demographic information' },
-  { title: 'Disease Characteristics',     sub: 'Primary diagnosis and disease history' },
-  { title: 'Current Disease Activity',    sub: 'Symptoms and activity assessment' },
-  { title: 'Laboratory & Investigations', sub: 'Recent test results and imaging' },
-  { title: 'Current Treatment',           sub: 'Medications and treatment response' },
-  { title: 'Treatment History',           sub: 'Previous IBD treatments tried' },
-  { title: 'Infection Screening',         sub: 'TB, hepatitis, and HIV screening results' },
-  { title: 'Vaccination History',         sub: 'Immunisation records with dates and dosage' },
-  { title: 'Comorbidities & Other',       sub: 'Other conditions and special considerations' },
+  { title: 'Medical Profile',             sub: 'Health information and vaccination history' },
+  { title: 'Health Records',              sub: 'Recent test results and document uploads' },
 ];
 
 const VAX_FIELDS: (keyof FormData)[] = [
@@ -112,30 +108,17 @@ export function validateStep(step: number, d: FormData): Record<string, string> 
     req('placeOfLiving','Place of living'); req('referredBy','Referred by');
     if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email))
       err['email'] = 'Enter a valid email address';
+    if (d.contactPhone && !/^[6-9]\d{9}$/.test(d.contactPhone))
+      err['contactPhone'] = 'Phone number must be exactly 10 digits and start with 6, 7, 8, or 9';
   }
-  if (step === 2) { req('primaryDiagnosis','Primary diagnosis'); req('diseaseDuration','Disease duration'); }
-  if (step === 3) {
-    req('currentDiseaseActivity','Disease activity level'); req('stoolFrequency','Stool frequency');
-    req('bloodInStool','Blood in stool'); req('abdominalPain','Abdominal pain');
-    req('impactOnQoL','Impact on quality of life'); req('weightLoss','Weight loss');
+  if (step === 2) { 
+    req('primaryDiagnosis','Primary diagnosis'); 
+    req('diseaseDuration','Disease duration'); 
+    // We only require basic health info, vaccines can be optional or required based on previous logic
   }
-  if (step === 4) { req('dateMostRecentLabs','Date of most recent labs'); req('recentLabValues','Recent lab values'); }
-  if (step === 5) { req('responseToTreatment','Response to treatment'); req('steroidUse','Steroid use'); }
-  if (step === 6) { req('previousTreatmentsTried','Previous treatments tried'); }
-  if (step === 7) { req('tbScreening','TB screening status'); req('hepBSurfaceAg','HBsAg result'); }
-
-  if (step === 8) {
-    for (const f of VAX_FIELDS) {
-      const entry = d[f] as VaccineEntry;
-      if (!entry || !entry.status) {
-        err[f as string] = `${VAX_LABELS[f as string]} — please select a status`;
-      }
-    }
-  }
-
-  if (step === 9) {
-    req('comorbidities','Comorbidities'); req('extraintestinalManif','Extraintestinal manifestations');
-    req('pregnancyPlanning','Pregnancy / family planning status');
+  if (step === 3) { 
+    req('dateMostRecentLabs','Date of most recent labs'); 
+    req('recentLabValues','Recent lab values'); 
   }
 
   return err;

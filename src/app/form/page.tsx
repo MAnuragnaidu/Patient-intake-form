@@ -13,11 +13,10 @@ import Step7InfectionScreening from '@/components/steps/Step7InfectionScreening'
 import Step8Vaccination      from '@/components/steps/Step8Vaccination';
 import Step9Comorbidities    from '@/components/steps/Step9Comorbidities';
 
-const TOTAL_STEPS = 9;
+const TOTAL_STEPS = 3;
 
 const SHORT_LABELS = [
-  'Patient','Disease','Activity','Labs','Treatment',
-  'History','Screening','Vaccines','Comorbidities',
+  'Patient', 'Medical', 'Health Records',
 ];
 
 export default function FormPage() {
@@ -196,13 +195,7 @@ export default function FormPage() {
           <div className="step-body">
             {step === 1 && <Step1PatientInfo      formData={data} onChange={updateData} errors={errors} />}
             {step === 2 && <Step2DiseaseChar      formData={data} onChange={updateData} errors={errors} />}
-            {step === 3 && <Step3DiseaseActivity  formData={data} onChange={updateData} errors={errors} />}
-            {step === 4 && <Step4LabsInvestigations formData={data} onChange={updateData} errors={errors} />}
-            {step === 5 && <Step5CurrentTreatment formData={data} onChange={updateData} errors={errors} />}
-            {step === 6 && <Step6TreatmentHistory formData={data} onChange={updateData} errors={errors} />}
-            {step === 7 && <Step7InfectionScreening formData={data} onChange={updateData} errors={errors} />}
-            {step === 8 && <Step8Vaccination      formData={data} onChange={updateData} errors={errors} />}
-            {step === 9 && <Step9Comorbidities    formData={data} onChange={updateData} errors={errors} />}
+            {step === 3 && <Step4LabsInvestigations formData={data} onChange={updateData} errors={errors} />}
           </div>
 
           <div className="form-nav">
