@@ -496,9 +496,9 @@ select.fi option { background: #ffffff; color: #0f172a; }
   .form-nav { padding: 14px; }
   .step-title { font-size: 16px; }
 
-  /* Show mobile minimap, hide desktop nav on small screens */
+  /* Show mobile minimap, conditionally hide desktop nav on small screens */
   .step-minimap { display: flex; }
-  .form-nav { display: none; }
+  .form-nav.form-nav-mobile-hide { display: none !important; }
 
   .vax-card-header { flex-direction: column; align-items: flex-start; gap: 10px; }
   .vax-status-row { width: 100%; }

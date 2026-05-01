@@ -200,7 +200,7 @@ export default function FormPage() {
           </div>
 
           {/* FIXED: nav bar stays fixed on mobile with safe area inset for iPhone notch */}
-          <div className="form-nav fixed bottom-0 left-0 right-0 z-50 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-4px_10px_rgba(0,0,0,0.08)] md:relative md:p-0 md:bg-transparent md:shadow-none md:z-auto">
+          <div className={`form-nav fixed bottom-0 left-0 right-0 z-50 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-4px_10px_rgba(0,0,0,0.08)] md:relative md:p-0 md:bg-transparent md:shadow-none md:z-auto ${step < TOTAL_STEPS ? 'form-nav-mobile-hide' : ''}`}>
             {step > 1 ? (
               <button type="button" className="btn-back" onClick={prevStep} disabled={isSubmitting}>
                 ← Back

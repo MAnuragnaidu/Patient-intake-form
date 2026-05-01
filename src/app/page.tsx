@@ -26,7 +26,16 @@ export default function Home() {
   };
 
   return (
-    <div className="page-root" style={{ justifyContent: 'center' }}>
+    <>
+      <style>{`
+        .landing-card-head { text-align: center; padding: 32px 28px 24px; }
+        .landing-card-body { padding: 0 28px 32px; }
+        @media (max-width: 480px) {
+          .landing-card-head { padding: 24px 20px 16px; }
+          .landing-card-body { padding: 0 20px 24px; }
+        }
+      `}</style>
+      <div className="page-root" style={{ justifyContent: 'center' }}>
       <header className="page-header" style={{ position: 'absolute', width: '100%', top: 0 }}>
         <div className="header-brand">MyGastro<span>.Ai</span></div>
         <div className="header-tag">Patient Portal</div>
@@ -34,7 +43,7 @@ export default function Home() {
 
       <main className="page-main" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 80 }}>
         <div className="step-card" style={{ maxWidth: 440, width: '100%' }}>
-          <div className="step-card-head" style={{ textAlign: 'center', padding: '32px 28px 24px' }}>
+          <div className="step-card-head landing-card-head">
             <div style={{
               width: 56, height: 56, borderRadius: '16px', background: 'rgba(59,130,246,0.12)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -48,7 +57,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="step-body" style={{ padding: '0 28px 32px' }}>
+          <div className="step-body landing-card-body">
             {error && (
               <div className="ferr" style={{ marginBottom: 16, padding: '10px 12px', background: 'var(--error-bg)', borderRadius: 'var(--radius-sm)' }}>
                 {error}
@@ -90,5 +99,6 @@ export default function Home() {
         </div>
       </main>
     </div>
+    </>
   );
 }
