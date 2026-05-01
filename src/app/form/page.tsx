@@ -179,7 +179,7 @@ export default function FormPage() {
         </div>
 
         {/* ── Step Card ── */}
-        <div className="step-card" key={step}>
+        <div className="step-card pb-24 md:pb-0" key={step}>
           <div className="step-card-head">
             <div className="step-num">Step {String(step).padStart(2, '0')}</div>
             <h1 className="step-title">{currentMeta.title}</h1>
@@ -198,7 +198,7 @@ export default function FormPage() {
             {step === 3 && <Step4LabsInvestigations formData={data} onChange={updateData} errors={errors} />}
           </div>
 
-          <div className="form-nav">
+          <div className="form-nav fixed bottom-0 left-0 right-0 z-50 bg-white p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-[0_-4px_10px_rgba(0,0,0,0.05)] md:relative md:p-0 md:bg-transparent md:shadow-none md:z-auto">
             {step > 1 ? (
               <button type="button" className="btn-back" onClick={prevStep} disabled={isSubmitting}>
                 ← Back
