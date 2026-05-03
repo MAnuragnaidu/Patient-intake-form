@@ -1,16 +1,27 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { INTAKE_SUBMITTED_KEY, PATIENT_ENTRY_KEY } from '@/lib/intakeSession';
 
 export default function Home() {
   const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setAlreadySubmitted(sessionStorage.getItem(INTAKE_SUBMITTED_KEY) === '1');
+  }, []);
 
   const handleStart = (e: React.FormEvent) => {
     e.preventDefault();
+    if (typeof window !== 'undefined' && sessionStorage.getItem(INTAKE_SUBMITTED_KEY) === '1') {
+      setError('You have already submitted your intake for this session. Close the browser or open a private window if you need to submit again.');
+      return;
+    }
     if (!name.trim() || !email.trim()) {
       setError('Both name and email are required.');
       return;
@@ -20,8 +31,7 @@ export default function Home() {
       return;
     }
 
-    // Store in sessionStorage to carry to the form
-    sessionStorage.setItem('patient_entry', JSON.stringify({ name: name.trim(), email: email.trim() }));
+    sessionStorage.setItem(PATIENT_ENTRY_KEY, JSON.stringify({ name: name.trim(), email: email.trim() }));
     router.push('/form');
   };
 
@@ -58,6 +68,11 @@ export default function Home() {
           </div>
 
           <div className="step-body landing-card-body">
+            {alreadySubmitted && (
+              <div className="ferr" style={{ marginBottom: 16, padding: '10px 12px', background: 'var(--error-bg)', borderRadius: 'var(--radius-sm)' }}>
+                You have already submitted your intake for this browser session. To use the intake form again, close all tabs for this site or use a private/incognito window.
+              </div>
+            )}
             {error && (
               <div className="ferr" style={{ marginBottom: 16, padding: '10px 12px', background: 'var(--error-bg)', borderRadius: 'var(--radius-sm)' }}>
                 {error}
@@ -91,7 +106,12 @@ export default function Home() {
                 />
               </div>
 
-              <button type="submit" className="btn-submit" style={{ width: '100%', justifyContent: 'center', marginTop: 8, padding: '12px 24px' }}>
+              <button
+                type="submit"
+                className="btn-submit"
+                style={{ width: '100%', justifyContent: 'center', marginTop: 8, padding: '12px 24px' }}
+                disabled={alreadySubmitted}
+              >
                 Begin Intake Form
               </button>
             </form>

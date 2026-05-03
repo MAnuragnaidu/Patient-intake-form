@@ -24,8 +24,8 @@ export default function SuccessPage() {
               Your intake form has been securely submitted to the clinical team. Thank you for providing this detailed information to help us prepare for your care.
             </p>
 
-            <Link href="/form" className="btn-back" style={{ display: 'inline-flex' }}>
-              Return to Start
+            <Link href="/" className="btn-back" style={{ display: 'inline-flex' }}>
+              Return to home
             </Link>
           </div>
         </div>

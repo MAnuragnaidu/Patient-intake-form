@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { FormData, initialFormData, STEP_META, validateStep } from '@/lib/formSchema';
+import { INTAKE_SUBMITTED_KEY, PATIENT_ENTRY_KEY } from '@/lib/intakeSession';
 import Step1PatientInfo from '@/components/steps/Step1PatientInfo';
 import Step2DiseaseChar from '@/components/steps/Step2DiseaseChar';
 import Step3DiseaseActivity from '@/components/steps/Step3DiseaseActivity';
@@ -26,12 +27,23 @@ export default function FormPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [sessionReady, setSessionReady] = useState(false);
 
   const currentMeta = STEP_META[step - 1];
 
-  // Pre-fill name/email from session storage (landing page)
   useEffect(() => {
-    const saved = sessionStorage.getItem('patient_entry');
+    if (typeof window === 'undefined') return;
+
+    if (sessionStorage.getItem(INTAKE_SUBMITTED_KEY) === '1') {
+      router.replace('/');
+      return;
+    }
+    if (!sessionStorage.getItem(PATIENT_ENTRY_KEY)) {
+      router.replace('/');
+      return;
+    }
+
+    const saved = sessionStorage.getItem(PATIENT_ENTRY_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -44,7 +56,8 @@ export default function FormPage() {
         console.error('Failed to parse patient_entry', err);
       }
     }
-  }, []);
+    setSessionReady(true);
+  }, [router]);
 
   const updateData = (field: string, value: any) => {
     setData(prev => ({ ...prev, [field]: value }));
@@ -119,7 +132,8 @@ export default function FormPage() {
         throw new Error(resData.error || `Server error ${res.status}`);
       }
 
-      sessionStorage.removeItem('patient_entry');
+      sessionStorage.setItem(INTAKE_SUBMITTED_KEY, '1');
+      sessionStorage.removeItem(PATIENT_ENTRY_KEY);
       router.push('/success');
     } catch (error: any) {
       console.error('[handleSubmit]', error);
@@ -131,6 +145,14 @@ export default function FormPage() {
   };
 
   const progressPct = Math.round((step / TOTAL_STEPS) * 100);
+
+  if (!sessionReady) {
+    return (
+      <div className="page-root" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+        <p className="step-subtitle" style={{ margin: 0 }}>Loading…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="page-root">
