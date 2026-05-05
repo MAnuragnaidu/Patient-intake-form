@@ -190,6 +190,7 @@ export default function Step8Vaccination({ formData: d, onChange, errors: e }: P
                               id={`${field as string}-dose-${idx}-date`}
                               type="date"
                               className="fi"
+                              max={new Date().toISOString().split('T')[0]}
                               value={dose.date}
                               onChange={x => updateDose(field, idx, 'date', x.target.value)}
                             />

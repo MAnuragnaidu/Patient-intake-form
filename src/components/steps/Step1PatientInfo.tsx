@@ -57,14 +57,14 @@ export default function Step1PatientInfo({ formData: d, onChange, errors: e }: P
       {/* Full Name */}
       <Fg id="name" label="Patient Full Name" required error={e.name}>
         <input id="name" type="text" className={`fi${e.name ? ' err' : ''}`}
-          value={d.name} onChange={x => onChange('name', x.target.value)}
+          value={d.name} onChange={x => onChange('name', x.target.value.replace(/[^a-zA-Z\s.'-]/g, ''))}
           placeholder="Full name as per records" />
       </Fg>
 
       {/* MRN */}
       <Fg id="mrn" label="Patient ID / MRN" required error={e.mrn}>
         <input id="mrn" type="text" className={`fi${e.mrn ? ' err' : ''}`}
-          value={d.mrn} onChange={x => onChange('mrn', x.target.value)}
+          value={d.mrn} onChange={x => onChange('mrn', x.target.value.replace(/[^a-zA-Z0-9-]/g, ''))}
           placeholder="e.g. MRN-00123" />
       </Fg>
 
@@ -79,6 +79,7 @@ export default function Step1PatientInfo({ formData: d, onChange, errors: e }: P
       {/* Date of Birth */}
       <Fg id="dateOfBirth" label="Date of Birth" required error={e.dateOfBirth}>
         <input id="dateOfBirth" type="date" className={`fi${e.dateOfBirth ? ' err' : ''}`}
+          max={new Date().toISOString().split('T')[0]}
           value={d.dateOfBirth} onChange={handleDateOfBirthChange} />
       </Fg>
 
@@ -99,14 +100,14 @@ export default function Step1PatientInfo({ formData: d, onChange, errors: e }: P
       {/* Place of Living */}
       <Fg id="placeOfLiving" label="Place of Living" required error={e.placeOfLiving}>
         <input id="placeOfLiving" type="text" className={`fi${e.placeOfLiving ? ' err' : ''}`}
-          value={d.placeOfLiving} onChange={x => onChange('placeOfLiving', x.target.value)}
+          value={d.placeOfLiving} onChange={x => onChange('placeOfLiving', x.target.value.replace(/[^a-zA-Z\s.'-,]/g, ''))}
           placeholder="City, State" />
       </Fg>
 
       {/* Referred By */}
       <Fg id="referredBy" label="Referred By" required error={e.referredBy}>
         <input id="referredBy" type="text" className={`fi${e.referredBy ? ' err' : ''}`}
-          value={d.referredBy} onChange={x => onChange('referredBy', x.target.value)}
+          value={d.referredBy} onChange={x => onChange('referredBy', x.target.value.replace(/[^a-zA-Z\s.'-]/g, ''))}
           placeholder="Doctor name / Hospital" />
       </Fg>
 

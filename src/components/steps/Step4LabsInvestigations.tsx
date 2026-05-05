@@ -57,11 +57,13 @@ export default function Step4LabsInvestigations({ formData: d, onChange, errors:
     <div className="form-grid">
       <Fg id="dateMostRecentLabs" label="Date of Most Recent Labs" required error={e.dateMostRecentLabs}>
         <input id="dateMostRecentLabs" type="date" className={`fi${e.dateMostRecentLabs?' err':''}`}
+          max={new Date().toISOString().split('T')[0]}
           value={d.dateMostRecentLabs} onChange={x => onChange('dateMostRecentLabs', x.target.value)} />
       </Fg>
 
       <Fg id="dateMostRecentColono" label="Date of Most Recent Colonoscopy" error={e.dateMostRecentColono}>
         <input id="dateMostRecentColono" type="date" className="fi"
+          max={new Date().toISOString().split('T')[0]}
           value={d.dateMostRecentColono} onChange={x => onChange('dateMostRecentColono', x.target.value)} />
       </Fg>
 

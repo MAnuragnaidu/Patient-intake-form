@@ -93,6 +93,7 @@ const VAX_LABELS: Record<string, string> = {
 
 export function validateStep(step: number, d: FormData): Record<string, string> {
   const err: Record<string, string> = {};
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const req = (f: keyof FormData, label: string) => {
     const v = d[f];
@@ -110,15 +111,56 @@ export function validateStep(step: number, d: FormData): Record<string, string> 
       err['email'] = 'Enter a valid email address';
     if (d.contactPhone && !/^[6-9]\d{9}$/.test(d.contactPhone))
       err['contactPhone'] = 'Phone number must be exactly 10 digits and start with 6, 7, 8, or 9';
+      
+    if (d.name && !/^[a-zA-Z\s.'-]+$/.test(d.name))
+      err['name'] = 'Name cannot contain special characters (only letters, spaces, hyphens, and apostrophes allowed)';
+
+    if (d.referredBy && !/^[a-zA-Z\s.'-]+$/.test(d.referredBy))
+      err['referredBy'] = 'Referred By cannot contain special characters';
+
+    if (d.placeOfLiving && !/^[a-zA-Z\s.'-,]+$/.test(d.placeOfLiving))
+      err['placeOfLiving'] = 'Place of Living cannot contain special characters';
+
+    if (d.mrn && !/^[a-zA-Z0-9-]+$/.test(d.mrn))
+      err['mrn'] = 'Patient ID / MRN can only contain letters, numbers, and hyphens';
+
+    if (d.dateOfBirth && d.dateOfBirth > todayStr)
+      err['dateOfBirth'] = 'Date of birth cannot be a future date';
+
+    if (d.currentAge && d.ageAtDiagnosis) {
+      if (Number(d.ageAtDiagnosis) > Number(d.currentAge)) {
+        err['ageAtDiagnosis'] = 'Age at IBD diagnosis cannot be greater than current age';
+      }
+    }
   }
   if (step === 2) { 
     req('primaryDiagnosis','Primary diagnosis'); 
     req('diseaseDuration','Disease duration'); 
-    // We only require basic health info, vaccines can be optional or required based on previous logic
+    
+    // Vaccination validation
+    VAX_FIELDS.forEach(f => {
+      const entry = d[f] as VaccineEntry;
+      if (entry && entry.status === 'given') {
+        entry.doses.forEach((dose) => {
+          if (dose.date && dose.date > todayStr) {
+            err[f as string] = `${VAX_LABELS[f as string]} date cannot be a future date`;
+          }
+          if (dose.dosage && !/[a-zA-Z]/.test(dose.dosage)) {
+            err[f as string] = `Dosage for ${VAX_LABELS[f as string]} requires a measurement unit (e.g., mL, mg)`;
+          }
+        });
+      }
+    });
   }
   if (step === 3) { 
     req('dateMostRecentLabs','Date of most recent labs'); 
     req('recentLabValues','Recent lab values'); 
+    
+    if (d.dateMostRecentLabs && d.dateMostRecentLabs > todayStr)
+      err['dateMostRecentLabs'] = 'Date cannot be a future date';
+      
+    if (d.dateMostRecentColono && d.dateMostRecentColono > todayStr)
+      err['dateMostRecentColono'] = 'Date cannot be a future date';
   }
 
   return err;
