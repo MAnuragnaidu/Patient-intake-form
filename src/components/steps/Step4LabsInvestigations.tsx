@@ -25,8 +25,8 @@ export default function Step4LabsInvestigations({ formData: d, onChange, errors:
     try {
       const formData = new window.FormData();
       formData.append('file', file);
-      formData.append('patientName', d.name || 'Unknown_Patient');
-      formData.append('mrn', d.mrn || 'Unknown_MRN');
+      formData.append('patientName', String(d.name || ''));
+      formData.append('mrn', String(d.mrn || ''));
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
       const res = await fetch(`${apiUrl}/api/drive/upload`, {
