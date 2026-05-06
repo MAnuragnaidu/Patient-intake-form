@@ -110,7 +110,7 @@ export default function FormPage() {
     setErrors({});
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://admin-xi-three-76.vercel.app';
       const res = await fetch(`${apiUrl}/api/patients`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
